@@ -63,14 +63,14 @@ const inventory = [
 
 const store = {
   name: 'This Object Store',
-
+  inventory,
   /**
    * Returns the name of the store
    * @method getName
    * @returns {string} - the name of the store
    */
   getName() {
-    // write your code here & return value
+    return this.name;
   },
   /**
    * Returns the inventory of the store
@@ -78,7 +78,7 @@ const store = {
    * @returns {array} - the inventory of the store
    */
   getInventory() {
-    // write your code here & return value
+    return this.inventory;
   },
   /**
    * Returns an arrays of most expensive items in inventory
@@ -87,7 +87,8 @@ const store = {
    * @return {array} items - the array of items that are filtered
    */
   getExpensiveItems(minPrice) {
-    // write your code here & return value
+    const expensiveThings = inventory.filter((item) => item.price > minPrice);
+    return expensiveThings;
   },
   /**
    * Returns an array of item names in store
@@ -95,7 +96,7 @@ const store = {
    * @return {array} items - the array of items that are filtered
    */
   getStoreItems() {
-    // write your code here & return value
+    return this.inventory.map((item) => item.name);
   },
   /**
    * Returns true if the item is in the store
@@ -105,7 +106,7 @@ const store = {
    * false otherwise
    */
   isItemInStore(itemName) {
-    // write your code here & return value
+    return this.inventory.some((item) => item.name === itemName);
   },
   /**
    * Returns the price of the item
@@ -116,7 +117,9 @@ const store = {
    * must use isItemInStore() method in this object
    */
   getItemPrice(itemName) {
-    // write your code here & return value
+    // eslint-disable-next-line no-shadow
+    const item = this.inventory.find((item) => item.name === itemName);
+    return item ? item.price : -1;
   },
 
   /**
@@ -128,7 +131,9 @@ const store = {
    * must use isItemInStore() method in this object
    */
   getItemQuantity(itemName) {
-    // write your code here & return value
+    // eslint-disable-next-line no-shadow
+    const item = this.inventory.find((item) => item.name === itemName);
+    return item ? item.quantity : -1;
   },
 
   /**
@@ -143,7 +148,14 @@ const store = {
    * must use isItemInStore() method in this object
    */
   addItemQuantity(itemName, price, quantity) {
-    // write your code here & return value
+    if (this.isItemInStore(itemName)) {
+      // eslint-disable-next-line no-shadow
+      const item = this.inventory.find((item) => item.name === itemName);
+      item.quantity += quantity;
+    } else {
+      this.inventory.push({ name: itemName, price, quantity });
+    }
+    return this.getItemQuantity(itemName);
   },
   /**
    * Removes a certain quantity of an item from the store
@@ -156,7 +168,14 @@ const store = {
    * must use isItemInStore() method in this object
    */
   removeItemQuantity(itemName, quantity) {
-    // write your code here & return value
+    if (!this.isItemInStore(itemName)) return -1;
+
+    // eslint-disable-next-line no-shadow
+    const item = this.inventory.find((item) => item.name === itemName);
+    if (item.quantity < quantity) return -1;
+
+    item.quantity -= quantity;
+    return this.getItemQuantity(itemName);
   },
   /**
    * Returns the total of all the items in the store
@@ -165,7 +184,12 @@ const store = {
    * must use the reduce() array method
    */
   getTotalValue() {
-    // write your code here & return value
+    let total = 0;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const item of this.inventory) {
+      total += item.price * item.quantity;
+    }
+    return total;
   },
 };
 
